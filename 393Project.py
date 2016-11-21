@@ -8,11 +8,18 @@ from evaluator import *
 from csvreader import *
 import time
 import timeUtil
+import random
 import collections
 
 DATE = 0
 AWAY = 1
 HOME = 3
+
+
+SEARCH_DEPTH = 100
+
+# sequence t_i mentioned in simulated annealing algorithm
+controlValues = [(1.0/x)**2 for x in xrange(1, SEARCH_DEPTH)]
 
 class scheduler:
   def __init__(self):
@@ -26,7 +33,7 @@ class scheduler:
     cal = reader.data  
     attributes = reader.attributes
     # change datetime column to only datetime
-    calDict = collections.OrderedDict()
+    schedule = collections.OrderedDict()
     for gameEntry in reader.data:
       date = gameEntry[DATE].split(" ")[DATE]
       epoch = timeUtil.dateToEpoch(date)
@@ -36,21 +43,46 @@ class scheduler:
       homeTeam = gameEntry[HOME]
       game = (awayTeam, homeTeam)
       # if this date already stored
-      if standardDate in calDict:
-        calDict[standardDate].add(game)
+      if standardDate in schedule:
+        schedule[standardDate].add(game)
       else:
-        calDict[standardDate] = set([game])
-    return calDict
+        schedule[standardDate] = set([game])
+    return schedule
 
-  def searchSchedule(self, calDict):
-    return
+  # uses simulated Annealing from page 16 of pdf
+  def searchSchedule(self, schedule):
+    best = evaluate(schedule)
+    depth = 0
+    # choose a solution s' from S randomly
+    # by selecting a game randomly and swithing it with 
+    # another game, making sure that all four teams involved
+    # don't have games on the same day
+    while (depth <= SEARCH_DEPTH):
+      # choose the source game to switch
+      date1 = random.choice(schedule.keys())
+      game1 = random.choice(list(schedule[date1]))
+      # choose the target game to switch
+      # ???? should we limit the range of difference between the
+      # dates to switch with?
+      date2 = date1
+      while (date2 == date1):
+        print date1, date2
+        date2 = random.choice(schedule.keys())
+      game2 = random.choice(list(schedule[date2]))
+      
+
+
+
+
+
 
     
 
 
 
 S = scheduler()
-print S.readSchedule("nba_games_2015-2016.txt")
+intialSchedule = S.readSchedule("nba_games_2015-2016.txt")
+S.searchSchedule(intialSchedule)
 
 
 
