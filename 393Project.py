@@ -72,17 +72,8 @@ class scheduler:
       
 
 
-
-
-
-
-    
-
-
-
 S = scheduler()
 intialSchedule = S.readSchedule("nba_games_2015-2016.txt")
-S.searchSchedule(intialSchedule)
-
+print evaluate(intialSchedule)
 
 
