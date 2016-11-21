@@ -32,10 +32,10 @@ class scheduler:
       epoch = timeUtil.dateToEpoch(date)
       standardDate = timeUtil.epochToDate(epoch)
       gameEntry[DATE] = standardDate
-      # if this date already stored
       awayTeam = gameEntry[AWAY]
       homeTeam = gameEntry[HOME]
       game = (awayTeam, homeTeam)
+      # if this date already stored
       if standardDate in calDict:
         calDict[standardDate].add(game)
       else:
