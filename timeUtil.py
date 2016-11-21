@@ -14,8 +14,6 @@ def epochToDate(epoch):
 def nextDay(dateString):
   return epochToDate(dateToEpoch(dateString) + DAY)
 
-
-
 # take in a date string, return the string representation of 
 # its prev day
 def prevDay(dateString):
