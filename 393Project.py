@@ -10,6 +10,8 @@ import time
 import timeUtil
 import random
 import collections
+import copy
+import math
 
 DATE = 0
 AWAY = 1
@@ -19,7 +21,7 @@ HOME = 3
 SEARCH_DEPTH = 100
 
 # sequence t_i mentioned in simulated annealing algorithm
-controlValues = [(1.0/x)**2 for x in xrange(1, SEARCH_DEPTH)]
+controlValues = [(1.0/x)**2 for x in xrange(1, SEARCH_DEPTH+1)]
 
 class scheduler:
   def __init__(self):
@@ -49,40 +51,83 @@ class scheduler:
         schedule[standardDate] = set([game])
     return schedule
 
+  # return True if team not relevant in games
+  def teamNoConflict(self, team, games):
+    for game in games:
+      if team in game:
+        return False
+    return True
+
+  def switchGames(self, schedule, date1, date2, game1, game2):
+    assert(game1 in schedule[date1])
+    assert(game2 in schedule[date2])
+    schedule[date1].remove(game1)
+    schedule[date2].remove(game2)
+    schedule[date1].add(game2)
+    schedule[date2].add(game1)
+
   # uses simulated Annealing from page 16 of pdf
   def searchSchedule(self, schedule):
-    best = evaluate(schedule)
+    S.best = evaluate(schedule)
+    print S.best
     depth = 0
     # choose a solution s' from S randomly
     # by selecting a game randomly and swithing it with 
     # another game, making sure that all four teams involved
     # don't have games on the same day
-    while (depth <= SEARCH_DEPTH):
-      # choose the source game to switch
+    while (depth < SEARCH_DEPTH):
+      s_score = evaluate(schedule)
       date1 = random.choice(schedule.keys())
       game1 = random.choice(list(schedule[date1]))
-      # choose the target game to switch
-      # ???? should we limit the range of difference between the
-      # dates to switch with?
       date2 = date1
-      while (date2 == date1):
-        print date1, date2
+      # choose the target game to switch
+      # not on same day, all four games don't have 
+      # same day matches after switch
+      date2Valid = False
+      while ((not date2Valid)):
+      # ???? should we limit the range of difference between the
+      # dates to switch with?          
         date2 = random.choice(schedule.keys())
-      game2 = random.choice(list(schedule[date2]))
+        game2 = random.choice(list(schedule[date2]))
+        if (date1 == date2):
+          continue
+        else:
+          date1Games = copy.deepcopy(schedule[date1])
+          date2Games = copy.deepcopy(schedule[date2])
+          date1Games.remove(game1)
+          date2Games.remove(game2)
+          (teamA, teamB) = game1
+          (teamC, teamD) = game2
+          # print teamA, teamB, teamC, teamB
+          # print date1Games
+          # print date2Games
+          if ((self.teamNoConflict(teamA, date2Games)) and \
+          (self.teamNoConflict(teamB, date2Games)) and \
+          (self.teamNoConflict(teamC, date1Games)) and \
+          (self.teamNoConflict(teamD, date1Games))):
+            date2Valid = True
+      # switch games, move to s'
+      self.switchGames(schedule, date1, date2, game1, game2)
+      # use randomness to decide with move to s'
+      randNum = random.uniform(0, 1)
+      s1_score = evaluate(schedule)
+      condition = min(1, math.exp((s1_score - s_score)*1.0/controlValues[depth]))
+      if (randNum >= condition):
+        # switch back
+        self.switchGames(schedule, date2, date1, game1, game2)
+      else:
+        if (s1_score >= S.best):
+          S.best = s1_score
+      depth += 1
+
       
 
 
 
 
 
-
-    
-
-
-
 S = scheduler()
 intialSchedule = S.readSchedule("nba_games_2015-2016.txt")
+
 S.searchSchedule(intialSchedule)
-
-
 
