@@ -4,7 +4,7 @@
 # d = 
 # assumption: use same game dates for 
 
-
+from evaluator import *
 from csvreader import *
 import time
 import timeUtil
@@ -40,21 +40,17 @@ class scheduler:
         calDict[standardDate].add(game)
       else:
         calDict[standardDate] = set([game])
-      return calDict
+    return calDict
 
-  # TODO: given a schedule, evaluates its score
-  # calDict: (or print calDict to see what it is)
-  #'mm/dd/yy' -> set([(away1, home1), (away2, home2), ...])
+  def searchSchedule(self, calDict):
+    return
 
-  def evaluateSchedule(calDict):
-    return 0
-
-  def searchSchedule(calDict):
     
 
 
 
 S = scheduler()
-S.readSchedule("nba_games_2015-2016.txt")
+print S.readSchedule("nba_games_2015-2016.txt")
+
 
 
