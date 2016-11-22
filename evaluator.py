@@ -45,7 +45,6 @@ def backToback(calDict,team,btbNum):
     ##????
     if inGame(team,games):
       if (nextDate in calDict) and inGame(team,calDict[nextDate]):
-        print "found back to back"
         btbNum += 1
         totalPanelty += btbOnTeam
   return totalPanelty

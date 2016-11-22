@@ -18,7 +18,7 @@ AWAY = 1
 HOME = 3
 
 
-SEARCH_DEPTH = 100
+SEARCH_DEPTH = 1000
 
 # sequence t_i mentioned in simulated annealing algorithm
 controlValues = [(1.0/x)**2 for x in xrange(1, SEARCH_DEPTH+1)]
@@ -69,13 +69,13 @@ class scheduler:
   # uses simulated Annealing from page 16 of pdf
   def searchSchedule(self, schedule):
     S.best = evaluate(schedule)
-    print S.best
     depth = 0
     # choose a solution s' from S randomly
     # by selecting a game randomly and swithing it with 
     # another game, making sure that all four teams involved
     # don't have games on the same day
     while (depth < SEARCH_DEPTH):
+      print S.best
       s_score = evaluate(schedule)
       date1 = random.choice(schedule.keys())
       game1 = random.choice(list(schedule[date1]))
@@ -111,13 +111,18 @@ class scheduler:
       # use randomness to decide with move to s'
       randNum = random.uniform(0, 1)
       s1_score = evaluate(schedule)
-      condition = min(1, math.exp((s1_score - s_score)*1.0/controlValues[depth]))
-      if (randNum >= condition):
-        # switch back
-        self.switchGames(schedule, date2, date1, game1, game2)
+      # print ("s1_score - s_score = %f, controlValues[depth] = %f" % (s1_score - s_score, controlValues[depth])) 
+      # condition = min(1, math.exp((s1_score - s_score)*1.0/controlValues[depth]))
+      # if (randNum >= condition):
+      #   # switch back
+      #   self.switchGames(schedule, date2, date1, game1, game2)
+      # else:
+      if (s1_score >= S.best):
+        S.best = s1_score
+      # this means we only update schedule when it's going in a better direction
       else:
-        if (s1_score >= S.best):
-          S.best = s1_score
+        self.switchGames(schedule, date2, date1, game1, game2)
+
       depth += 1
 
       
