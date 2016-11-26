@@ -21,7 +21,7 @@ HOME = 3
 SEARCH_DEPTH = 1000
 
 # sequence t_i mentioned in simulated annealing algorithm
-controlValues = [(1.0/x)**2 for x in xrange(1, SEARCH_DEPTH+1)]
+controlValues = [1 - i * 1.0/SEARCH_DEPTH for i in xrange(SEARCH_DEPTH)]
 
 class scheduler:
   def __init__(self):
@@ -68,6 +68,7 @@ class scheduler:
 
   # uses simulated Annealing from page 16 of pdf
   def searchSchedule(self, schedule):
+    scaleFactor = None
     S.best = evaluate(schedule)
     depth = 0
     # choose a solution s' from S randomly
@@ -111,27 +112,22 @@ class scheduler:
       # use randomness to decide with move to s'
       randNum = random.uniform(0, 1)
       s1_score = evaluate(schedule)
-      # print ("s1_score - s_score = %f, controlValues[depth] = %f" % (s1_score - s_score, controlValues[depth])) 
-      # condition = min(1, math.exp((s1_score - s_score)*1.0/controlValues[depth]))
-      # if (randNum >= condition):
-      #   # switch back
-      #   self.switchGames(schedule, date2, date1, game1, game2)
-      # else:
-      if (s1_score >= S.best):
-        S.best = s1_score
-      # this means we only update schedule when it's going in a better direction
-      else:
+      if (scaleFactor == None):
+        scaleFactor = abs(s1_score - s_score)
+      delta = s1_score - s_score
+      print ("s1_score - s_score = %f, controlValues[depth] = %f" % (s1_score - s_score, controlValues[depth])) 
+      condition = min(1, math.exp((delta*1.0/scaleFactor)*1.0/controlValues[depth]))
+      if (randNum >= condition):
+        # switch back
         self.switchGames(schedule, date2, date1, game1, game2)
-
-      depth += 1
-
-      
-
-
-
-
+      else:
+        if (s1_score >= S.best):
+          S.best = s1_score
+        # this means we only update schedule when it's going in a better direction
+        else:
+          self.switchGames(schedule, date2, date1, game1, game2)
+        depth += 1
 
 S = scheduler()
 intialSchedule = S.readSchedule("nba_games_2015-2016.txt")
 S.searchSchedule(intialSchedule)
-
