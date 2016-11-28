@@ -14,6 +14,7 @@ import copy
 import math
 from plotUtil import *
 
+PLOT = True
 DATE = 0
 AWAY = 1
 HOME = 3
@@ -26,7 +27,6 @@ controlValues = [1 - i * 1.0/SEARCH_DEPTH for i in xrange(SEARCH_DEPTH)]
 class scheduler:
   def __init__(self):
     return
-
   # given a schedule file,
   # return a dictionary type of the schedule:
   # 'mm/dd/yy' -> set([(away1, home1), (away2, home2), ...])
@@ -71,7 +71,8 @@ class scheduler:
     scaleFactor = None
     S.best = evaluate(schedule)
     depth = 0
-    plot = Plot()
+    if (PLOT):
+      scorePlot = Plot()
     # choose a solution s' from S randomly
     # by selecting a game randomly and swithing it with 
     # another game, making sure that all four teams involved
@@ -79,7 +80,8 @@ class scheduler:
     while (depth < SEARCH_DEPTH):
       s_score = evaluate(schedule)
       print ("s_score = %.04f" % s_score)
-      plot.update(depth, s_score)
+      if (PLOT):
+        scorePlot.update(depth, s_score)
       date1 = random.choice(schedule.keys())
       game1 = random.choice(list(schedule[date1]))
       date2 = date1
