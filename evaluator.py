@@ -10,16 +10,18 @@ from distanceReader import *
 import time
 import timeUtil
 import collections
+import math
 
 total = 0
 teams = set()
 teamScores = dict()
 teamDistance = dict()
 # to be determined
-btbOnTotal = -25
-btbOnTeam = -25
-weightBtb = 0.5
-weightFairness = 0.5
+btbOnTotal = -10
+btbOnTeam = -10
+weightBtb = 0.3
+weightFairness = 0.4
+weightDistance = 0.3
 distanceReader = CsvReader("distances.csv")
 distance = distanceReader.distanceDict
 
@@ -45,30 +47,30 @@ def inGame(team, games):
       return True
   return None
 
-def backToback(calDict,team,btbNum):
+def backToback(calDict,team):
   totalPanelty = 0
   totalDistance = 0
+  counter = 0
   for date in calDict:
     nextDate = nextDay(date)
     games = calDict[date]
-    ##????
     if inGame(team,games):
       if (nextDate in calDict) and inGame(team,calDict[nextDate]):
-        btbNum += 1
+        counter += 1
         totalPanelty += btbOnTeam
-  return totalPanelty
+  return (totalPanelty,counter)
 
 
-def getVariance(teamScores):
+def getStdDev(teamScores):
   total = 0
   for team in teamScores:
     total += teamScores[team]
-  mean = total/len(teams)
+  mean = total * 1.0 /len(teams)
   variance = 0
   for team in teamScores:
     variance += (teamScores[team] - mean)**2
-  variance /= len(teams)
-  return variance
+  variance = variance * 1.0 / len(teams)
+  return math.sqrt(variance)
 
 def totalDistance(calDict,teams):
   total = 0
@@ -99,12 +101,17 @@ def evaluate(calDict):
   initialTeamSocores(calDict)
   btbNum = 0
   distanceSum = totalDistance(calDict, teams)
-  print distanceSum
   for team in teamScores:
-    teamScores[team] += backToback(calDict,team,btbNum)
-  
-  fairness = getVariance(teamScores) * -1
-  totalScore = weightFairness * fairness + weightBtb * btbNum 
+    teamScoreDelta, btbNumDelta = backToback(calDict,team)
+    teamScores[team] += teamScoreDelta
+    btbNum += btbNumDelta
+  btbV = getStdDev(teamScores)
+  teamD = dict()
+  for each in teamDistance:
+    teamD[each] = teamDistance[each][0]
+  distanceV = getStdDev(teamD)
+  print "btbV : %.04f, btbNum : %.04f, distanceV : %.04f, distanceSum : %.04f" % (btbV, btbNum, distanceV, distanceSum)
+  totalScore = -0.2 * btbV + -0.5 * btbNum + distanceV* - 1  /1000 + - 1 * (distanceSum/1000)
   return totalScore
 
 
