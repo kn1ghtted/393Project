@@ -607,7 +607,7 @@ Datetime,Away Location,Away Mascot,Home Location,Home Mascot
 1/17/16 6:30 PM,Portland,Trailblazers,Philadelphia,76ers
 1/17/16 7:00 PM,New York,Knicks,Memphis,Grizzlies
 1/17/16 8:00 PM,Los Angeles,Lakers,Utah,Jazz
-1/17/16 9:30 PM,Sacramento,Kings,Los Angeles,Lakers
+1/17/16 9:30 PM,Sacramento,Kings,Los Angeles,Clippers
 1/18/16 2:30 PM,Phoenix,Suns,Minnesota,Timberwolves
 1/18/16 6:00 PM,Miami,Heat,Oklahoma City,Thunder
 1/18/16 6:00 PM,Dallas,Mavericks,San Antonio,Spurs
@@ -790,7 +790,7 @@ Datetime,Away Location,Away Mascot,Home Location,Home Mascot
 2/11/16 6:00 PM,Charlotte,Hornets,Indiana,Pacers
 2/11/16 6:00 PM,San Antonio,Spurs,Orlando,Magic
 2/11/16 6:00 PM,Sacramento,Kings,Philadelphia,76ers
-2/11/16 6:30 PM,Los Angeles,Lakers,Boston,Celtics
+2/11/16 6:30 PM,Los Angeles,Clippers,Boston,Celtics
 2/11/16 6:30 PM,Memphis,Grizzlies,Brooklyn,Nets
 2/11/16 6:30 PM,Denver,Nuggets,Detroit,Pistons
 2/11/16 7:00 PM,Los Angeles,Lakers,Cleveland,Cavaliers
