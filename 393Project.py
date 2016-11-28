@@ -71,7 +71,7 @@ class scheduler:
     scaleFactor = None
     S.best = evaluate(schedule)
     depth = 0
-    plot = Plot()
+    # plot = Plot()
     # choose a solution s' from S randomly
     # by selecting a game randomly and swithing it with 
     # another game, making sure that all four teams involved
@@ -79,7 +79,7 @@ class scheduler:
     while (depth < SEARCH_DEPTH):
       s_score = evaluate(schedule)
       print ("s_score = %.04f" % s_score)
-      plot.update(depth, s_score)
+      # plot.update(depth, s_score)
       date1 = random.choice(schedule.keys())
       game1 = random.choice(list(schedule[date1]))
       date2 = date1
