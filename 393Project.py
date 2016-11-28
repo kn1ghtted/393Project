@@ -4,6 +4,7 @@
 # d = 
 # assumption: use same game dates for 
 
+from myOrderedDict import MyOrderedDict
 from evaluator import *
 from csvreader import *
 import time
@@ -19,7 +20,7 @@ DATE = 0
 AWAY = 1
 HOME = 3
 
-SEARCH_DEPTH = 1000
+SEARCH_DEPTH = 100
 
 # sequence t_i mentioned in simulated annealing algorithm
 controlValues = [1 - i * 1.0/SEARCH_DEPTH for i in xrange(SEARCH_DEPTH)]
@@ -35,7 +36,7 @@ class scheduler:
     cal = reader.data  
     attributes = reader.attributes
     # change datetime column to only datetime
-    schedule = collections.OrderedDict()
+    schedule = MyOrderedDict()
     for gameEntry in reader.data:
       date = gameEntry[DATE].split(" ")[DATE]
       epoch = timeUtil.dateToEpoch(date)
@@ -71,7 +72,9 @@ class scheduler:
     scaleFactor = None
     S.best = evaluate(schedule)
     depth = 0
+
     if (PLOT):
+      btbPlot = Plot()
       scorePlot = Plot()
     # choose a solution s' from S randomly
     # by selecting a game randomly and swithing it with 
@@ -79,9 +82,11 @@ class scheduler:
     # don't have games on the same day
     while (depth < SEARCH_DEPTH):
       s_score = evaluate(schedule)
+      totalBtbs = 1
       print ("s_score = %.04f" % s_score)
       if (PLOT):
         scorePlot.update(depth, s_score)
+        btbPlot.update(depth, totalBtbs)
       date1 = random.choice(schedule.keys())
       game1 = random.choice(list(schedule[date1]))
       date2 = date1
