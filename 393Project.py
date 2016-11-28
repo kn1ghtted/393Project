@@ -12,11 +12,11 @@ import random
 import collections
 import copy
 import math
+from plotUtil import *
 
 DATE = 0
 AWAY = 1
 HOME = 3
-
 
 SEARCH_DEPTH = 1000
 
@@ -71,13 +71,15 @@ class scheduler:
     scaleFactor = None
     S.best = evaluate(schedule)
     depth = 0
+    plot = Plot()
     # choose a solution s' from S randomly
     # by selecting a game randomly and swithing it with 
     # another game, making sure that all four teams involved
     # don't have games on the same day
     while (depth < SEARCH_DEPTH):
-      print S.best
       s_score = evaluate(schedule)
+      print ("s_score = %.04f" % s_score)
+      plot.update(depth, s_score)
       date1 = random.choice(schedule.keys())
       game1 = random.choice(list(schedule[date1]))
       date2 = date1
@@ -115,7 +117,6 @@ class scheduler:
       if (scaleFactor == None):
         scaleFactor = abs(s1_score - s_score)
       delta = s1_score - s_score
-      print ("s1_score - s_score = %f, controlValues[depth] = %f" % (s1_score - s_score, controlValues[depth])) 
       condition = min(1, math.exp((delta*1.0/scaleFactor)*1.0/controlValues[depth]))
       if (randNum >= condition):
         # switch back
