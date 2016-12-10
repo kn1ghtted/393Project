@@ -20,7 +20,7 @@ DATE = 0
 AWAY = 1
 HOME = 3
 
-SEARCH_DEPTH = 100
+SEARCH_DEPTH = 5000
 
 # sequence t_i mentioned in simulated annealing algorithm
 controlValues = [1 - i * 1.0/SEARCH_DEPTH for i in xrange(SEARCH_DEPTH)]

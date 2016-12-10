@@ -110,8 +110,8 @@ def evaluate(calDict):
   for each in teamDistance:
     teamD[each] = teamDistance[each][0]
   distanceV = getStdDev(teamD)
-  print "btbV : %.04f, btbNum : %.04f, distanceV : %.04f, distanceSum : %.04f" % (btbV, btbNum, distanceV, distanceSum)
-  totalScore = -0.2 * btbV + -0.5 * btbNum + distanceV* - 1  /1000 + - 1 * (distanceSum/1000)
+  print "btb stdev : %.04f, btbNum : %.04f, distance stdev : %.04f, distanceSum : %.04f" % (btbV, btbNum, distanceV, distanceSum)
+  totalScore = -0.1 * btbV + -0.6 * btbNum + distanceV* (- 0.1)  /1000 + - 0.5 * (distanceSum/1000)
   return totalScore
 
 
