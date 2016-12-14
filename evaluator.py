@@ -96,7 +96,6 @@ def totalDistance(calDict,teams):
     total += teamDistance[each][0]
   return total
 
-
 def evaluate(calDict):
   allTeams(calDict)
   initialTeamSocores(calDict)
@@ -106,15 +105,16 @@ def evaluate(calDict):
     teamScoreDelta, btbNumDelta = backToback(calDict,team)
     teamScores[team] += teamScoreDelta
     btbNum += btbNumDelta
-  btbV = getStdDev(teamScores)
+  btbStdev = getStdDev(teamScores)
   teamD = dict()
   for each in teamDistance:
     teamD[each] = teamDistance[each][0]
-  distanceV = getStdDev(teamD)
-  print "btb stdev : %.04f, btbNum : %.04f, distance stdev : %.04f, distanceSum : %.04f" % (btbV, btbNum, distanceV, distanceSum)
-  totalScore = -0.1 * btbV + -0.6 * btbNum + distanceV* (- 0.1)  /1000 + - 0.5 * (distanceSum/1000)
-  return totalScore
-
-
-
-
+  distanceStdev = getStdDev(teamD)
+  totalScore = -0.1 * btbStdev + -0.6 * btbNum + distanceStdev * (- 0.1)  /1000 + - 0.5 * (distanceSum/1000)
+  retObject = {}
+  retObject["score"] = totalScore
+  retObject["btbNum"] = btbNum
+  retObject["btbStdev"] = btbStdev
+  retObject["distanceSum"] = distanceSum
+  retObject["distanceStdev"] = distanceStdev
+  return retObject

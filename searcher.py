@@ -70,7 +70,7 @@ class scheduler:
   # uses simulated Annealing from page 16 of pdf
   def searchSchedule(self, schedule):
     scaleFactor = None
-    S.best = evaluate(schedule)
+    S.best = evaluate(schedule)["score"]
     depth = 0
 
     if (PLOT):
@@ -81,7 +81,8 @@ class scheduler:
     # another game, making sure that all four teams involved
     # don't have games on the same day
     while (depth < SEARCH_DEPTH):
-      s_score = evaluate(schedule)
+      retObject = evaluate(schedule)
+      s_score = retObject["score"]
       totalBtbs = 1
       print ("s_score = %.04f" % s_score)
       if (PLOT):
@@ -108,9 +109,7 @@ class scheduler:
           date2Games.remove(game2)
           (teamA, teamB) = game1
           (teamC, teamD) = game2
-          # print teamA, teamB, teamC, teamB
-          # print date1Games
-          # print date2Games
+
           if ((self.teamNoConflict(teamA, date2Games)) and \
           (self.teamNoConflict(teamB, date2Games)) and \
           (self.teamNoConflict(teamC, date1Games)) and \
@@ -120,7 +119,8 @@ class scheduler:
       self.switchGames(schedule, date1, date2, game1, game2)
       # use randomness to decide with move to s'
       randNum = random.uniform(0, 1)
-      s1_score = evaluate(schedule)
+      s1_object = evaluate(schedule)
+      s1_score = s1_object["score"]
       if (scaleFactor == None):
         scaleFactor = abs(s1_score - s_score)
       delta = s1_score - s_score
