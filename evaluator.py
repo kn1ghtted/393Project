@@ -7,6 +7,7 @@
 import sys
 from timeUtil import *
 from distanceReader import *
+from popularityReader import *
 import time
 import timeUtil
 import collections
