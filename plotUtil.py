@@ -12,7 +12,7 @@ class Plot:
     self.fig, self.ax1 = plt.subplots()
     # self.ax1 = plt.gca()
     self.line1, = self.ax1.plot([], [], 'b-')
-    self.ax1.set_xlabel('Iteration')
+    self.ax1.set_xlabel('Updated Iterations')
     self.ax1.set_ylabel('Score')
     
   def update(self, x, y):

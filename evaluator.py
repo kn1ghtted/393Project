@@ -109,7 +109,7 @@ def evaluate(calDict):
   for each in teamDistance:
     teamD[each] = teamDistance[each][0]
   distanceStdev = getStdDev(teamD)
-  totalScore = -0.1 * btbStdev + -0.6 * btbNum + distanceStdev * (- 0.1)  /1000 + - 0.5 * (distanceSum/1000)
+  totalScore = -0.05 * btbStdev + (-0.3) * (btbNum**2) + distanceStdev * (- 0.01) /10000 + - 0.5 * (distanceSum/10000)
   retObject = {}
   retObject["score"] = totalScore
   retObject["btbNum"] = btbNum
