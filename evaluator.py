@@ -3,7 +3,7 @@
   #'mm/dd/yy' -> set([(away1, home1), (away2, home2), ...])
 
 #still need to deal with distance
-
+import datetime
 import sys
 from timeUtil import *
 from distanceReader import *
@@ -12,6 +12,8 @@ import time
 import timeUtil
 import collections
 import math
+
+GAME_SCORE_THRESHOLD = 4000
 
 total = 0
 teams = set()
@@ -23,11 +25,11 @@ btbOnTeam = -10
 weightBtb = 0.3
 weightFairness = 0.4
 weightDistance = 0.3
-distanceReader = CsvReader("distances.csv")
+distanceReader = DistanceReader("distances.csv")
 distance = distanceReader.distanceDict
+popularityReader = PopularityReader("Popularity new.csv")
+popularityDict = popularityReader.popularityDict
 
-
- 
 
 def allTeams(calDict):
   for date in calDict:
@@ -73,6 +75,29 @@ def getStdDev(teamScores):
   variance = variance * 1.0 / len(teams)
   return math.sqrt(variance)
 
+def popularity(calDict):
+  popularityPoint = 0
+  for date in calDict:
+    month, day, year = (int(x) for x in date.split('/'))
+    year = 2000 + year  
+    ans = datetime.date(year, month, day)
+    weekday = ans.strftime("%A")
+    games = calDict[date]
+    if weekday == "Friday":
+        for game in games:
+            totalScore = popularityDict[game[0]] + popularityDict[game[1]]
+            if (totalScore ** 2) > GAME_SCORE_THRESHOLD:
+                print game[0], game[1], (totalScore) ** 2 - GAME_SCORE_THRESHOLD
+                popularityPoint += (totalScore) ** 2 - GAME_SCORE_THRESHOLD
+    if date == "12/25/2015":
+        for game in games:
+            totalScore = popularityDict[game[0]] + popularityDict[game[1]]
+            if totalScore > GAME_SCORE_THRESHOLD:
+                popularityPoint += totalScore ** 2
+  return popularityPoint
+
+
+ 
 def totalDistance(calDict,teams):
   total = 0
   for date in calDict:
@@ -96,6 +121,8 @@ def totalDistance(calDict,teams):
     total += teamDistance[each][0]
   return total
 
+
+
 def evaluate(calDict):
   allTeams(calDict)
   initialTeamSocores(calDict)
@@ -110,11 +137,16 @@ def evaluate(calDict):
   for each in teamDistance:
     teamD[each] = teamDistance[each][0]
   distanceStdev = getStdDev(teamD)
-  totalScore = -0.1 * btbStdev + -0.6 * btbNum + distanceStdev * (- 0.1)  /1000 + - 0.5 * (distanceSum/1000)
+  popularityScore = popularity(calDict)
+  totalScore = -0.1 * btbStdev + -0.6 * btbNum + distanceStdev * (- 0.1)  /1000 + - 0.5 * (distanceSum/1000) + popularityScore
   retObject = {}
   retObject["score"] = totalScore
   retObject["btbNum"] = btbNum
   retObject["btbStdev"] = btbStdev
   retObject["distanceSum"] = distanceSum
   retObject["distanceStdev"] = distanceStdev
+  retObject["popularityScore"] = popularityScore
+  # print "popularityScore = ", popularityScore
+  sys.exit(0)
   return retObject
+

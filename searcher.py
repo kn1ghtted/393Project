@@ -15,7 +15,7 @@ import copy
 import math
 from plotUtil import *
 
-PLOT = True
+PLOT = False
 DATE = 0
 AWAY = 1
 HOME = 3

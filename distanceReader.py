@@ -1,4 +1,4 @@
-class CsvReader:
+class DistanceReader:
   def __init__(self, filename):
     examples = []
     inputFile = open(filename, "r+")
